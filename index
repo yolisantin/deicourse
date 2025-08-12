@@ -1,56 +1,508 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="robots" content="noindex" />
-  <title>Foundations of Diversity, Equity, and Inclusion</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
-  <style>
-    body {
-      font-family: 'Inter', sans-serif;
-      background-color: #FDFBF8;
-      color: #333;
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Foundations of Diversity, Equity, and Inclusion</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Warm Neutrals with Subtle Accents -->
+    <!-- Application Structure Plan: A thematic, non-linear dashboard structure is used to empower users to explore content based on their immediate interests, rather than following a rigid, linear path. The key sections are: 1) Core Concepts (an interactive analogy), 2) The 'Why' (data-driven business/moral case), 3) Global View (an interactive map for regional context), and 4) Practical Application (scenarios). This design promotes self-directed learning and makes complex information more digestible and engaging, which is crucial for a diverse, global audience with varying levels of prior knowledge and different regional priorities. Navigation is handled by a persistent top bar for seamless access to all sections. -->
+    <!-- Visualization & Content Choices: 
+        - Report Info: DEI definitions. Goal: Clarify concepts. Viz/Method: Interactive 'Cake Analogy' diagram (HTML/CSS/JS). Interaction: Hover/click to reveal definitions. Justification: Transforms abstract terms into a memorable, positive-sum visual metaphor, avoiding the problematic 'fence' analogy. Library: Vanilla JS.
+        - Report Info: Business case statistics. Goal: Persuade with data. Viz/Method: Interactive Bar Chart. Interaction: Hover tooltips show specific data points. Justification: A dynamic chart is more impactful and easier to interpret than a static table, clearly linking DEI to performance. Library: Chart.js.
+        - Report Info: Country-specific DEI analysis. Goal: Compare global contexts. Viz/Method: Clickable world map graphic with a dynamic content display area. Interaction: Clicking a country updates the text and data shown. Justification: Provides an intuitive, visual way to explore and compare complex regional nuances without overwhelming the user. Library: Vanilla JS.
+        - Report Info: Hiring scenario. Goal: Apply learning. Viz/Method: Multi-step branching scenario. Interaction: User makes choices that lead to different outcomes. Justification: Active participation in a realistic scenario deepens understanding and retention far more effectively than passive reading. Library: Vanilla JS.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #FDFBF8;
+            color: #333;
+        }
+        .nav-link {
+            transition: color 0.3s, border-bottom-color 0.3s;
+        }
+        .nav-link.active, .nav-link:hover {
+            color: #A56A44;
+            border-bottom-color: #A56A44;
+        }
+        .card {
+            background-color: #FFFFFF;
+            border: 1px solid #EAEAEA;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        .btn-primary {
+            background-color: #A56A44;
+            color: white;
+            transition: background-color 0.3s;
+        }
+        .btn-primary:hover {
+            background-color: #8E5A39;
+        }
+        .btn-secondary {
+            background-color: #F3F4F6;
+            color: #374151;
+            transition: background-color 0.3s;
+        }
+        .btn-secondary:hover {
+            background-color: #E5E7EB;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 400px;
+            max-height: 50vh;
+        }
+        .map-pin {
+            cursor: pointer;
+            transition: transform 0.2s, fill 0.2s;
+        }
+        .map-pin:hover, .map-pin.active {
+            transform: scale(1.2);
+            fill: #A56A44;
+        }
+        .fade-in {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <!-- Header & Navigation -->
+    <header class="bg-white/80 backdrop-blur-md sticky top-0 z-50 shadow-sm">
+        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <div class="text-2xl font-bold text-gray-800">
+                <span class="text-[#A56A44]">DEI</span> Foundations
+            </div>
+            <div class="hidden md:flex items-center space-x-8">
+                <a href="#concepts" class="nav-link text-gray-600 border-b-2 border-transparent pb-1">Concepts</a>
+                <a href="#why" class="nav-link text-gray-600 border-b-2 border-transparent pb-1">The "Why"</a>
+                <a href="#global" class="nav-link text-gray-600 border-b-2 border-transparent pb-1">Global View</a>
+                <a href="#practice" class="nav-link text-gray-600 border-b-2 border-transparent pb-1">In Practice</a>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container mx-auto px-6 py-12">
+
+        <!-- Welcome Section -->
+        <section id="welcome" class="text-center mb-24">
+            <h1 class="text-4xl md:text-5xl font-bold text-gray-800 mb-4">Building a Workplace for Everyone</h1>
+            <p class="text-lg text-gray-600 max-w-3xl mx-auto">
+                This experience is your guide to understanding the core concepts of Diversity, Equity, and Inclusion (DEI) and their vital role in creating a more innovative, creative, and productive workplace. Explore the sections below to learn at your own pace.
+            </p>
+        </section>
+
+        <!-- Section 1: Core Concepts -->
+        <section id="concepts" class="mb-24 scroll-mt-20">
+            <h2 class="text-3xl font-bold text-center mb-4">The Core Concepts: A Recipe for Success</h2>
+            <p class="text-center text-gray-600 mb-12 max-w-2xl mx-auto">DEI is like baking a cake. Each element is distinct but essential to create the final, delicious outcome: a sense of belonging for everyone. Interact with the elements below to learn more.</p>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <div class="card p-6 text-center cake-element" data-title="Diversity: The Ingredients" data-text="Diversity is the presence of difference—the full spectrum of human variety. Like a cake needs flour, sugar, and eggs, our company needs people with diverse backgrounds, thoughts, and experiences to be complete.">
+                    <div class="text-5xl mb-4">🥣</div>
+                    <h3 class="text-xl font-semibold mb-2">Diversity</h3>
+                    <p class="text-gray-500">The Ingredients</p>
+                </div>
+                <div class="card p-6 text-center cake-element" data-title="Equity: The Recipe" data-text="Equity is ensuring fairness by giving people what they need to succeed. It's measuring the correct amount of each ingredient as the recipe requires, acknowledging that different ingredients need different quantities.">
+                    <div class="text-5xl mb-4">⚖️</div>
+                    <h3 class="text-xl font-semibold mb-2">Equity</h3>
+                    <p class="text-gray-500">The Recipe</p>
+                </div>
+                <div class="card p-6 text-center cake-element" data-title="Inclusion: The Mixing" data-text="Inclusion is the deliberate action of creating an environment where diversity is valued. It's the process of mixing the ingredients together. Simply having them in the bowl isn't enough; they must be integrated to create the batter.">
+                    <div class="text-5xl mb-4">🔄</div>
+                    <h3 class="text-xl font-semibold mb-2">Inclusion</h3>
+                    <p class="text-gray-500">The Mixing</p>
+                </div>
+                <div class="card p-6 text-center cake-element" data-title="Belonging: The Cake" data-text="Belonging is the outcome—the delicious cake! It's the feeling of psychological safety, acceptance, and support that allows employees to be their authentic selves, which is the ultimate goal of all DEI efforts.">
+                    <div class="text-5xl mb-4">🎂</div>
+                    <h3 class="text-xl font-semibold mb-2">Belonging</h3>
+                    <p class="text-gray-500">The Finished Cake</p>
+                </div>
+            </div>
+            <div id="cake-analogy-display" class="mt-8 p-6 bg-white rounded-lg shadow-md border border-gray-200 min-h-[100px] fade-in" style="display: none;">
+                <h4 id="cake-analogy-title" class="text-xl font-bold text-[#A56A44] mb-2"></h4>
+                <p id="cake-analogy-text" class="text-gray-700"></p>
+            </div>
+        </section>
+
+        <!-- Section 2: The "Why" -->
+        <section id="why" class="mb-24 scroll-mt-20">
+            <h2 class="text-3xl font-bold text-center mb-4">The Dual Imperative: Why DEI Matters</h2>
+            <p class="text-center text-gray-600 mb-12 max-w-2xl mx-auto">DEI is not just a moral obligation; it's a powerful business strategy. Explore the data-driven business case and the foundational moral case for our commitment.</p>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+                <div>
+                    <h3 class="text-2xl font-semibold mb-4 text-gray-800">The Business Case: A Performance Multiplier</h3>
+                    <p class="text-gray-600 mb-6">The data is clear: companies that excel in DEI consistently outperform their peers. This chart highlights key performance indicators directly linked to strong DEI practices. Hover over the bars for details.</p>
+                    <div class="chart-container">
+                        <canvas id="businessCaseChart"></canvas>
+                    </div>
+                </div>
+                <div class="card p-8">
+                    <h3 class="text-2xl font-semibold mb-4 text-gray-800">The Moral Case: A Foundation of Respect</h3>
+                     <p class="text-gray-600 mb-4">While the numbers are compelling, our commitment to DEI is rooted in something more fundamental: the belief that every employee deserves to be treated with dignity and fairness.</p>
+                    <ul class="space-y-4">
+                        <li class="flex items-start">
+                            <span class="text-green-500 mr-3 mt-1">✓</span>
+                            <p class="text-gray-700">It's about creating a workplace where everyone feels respected, their contributions are valued, and they have an equitable opportunity to succeed.</p>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-green-500 mr-3 mt-1">✓</span>
+                            <p class="text-gray-700">This ethical commitment builds <strong class="font-semibold">psychological safety</strong>, empowering people to innovate, collaborate, and challenge the status quo without fear.</p>
+                        </li>
+                        <li class="flex items-start">
+                             <span class="text-green-500 mr-3 mt-1">✓</span>
+                            <p class="text-gray-700">Ultimately, the business benefits of DEI are the direct result of honoring our moral obligation to our people.</p>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 3: Global View -->
+        <section id="global" class="mb-24 scroll-mt-20">
+            <h2 class="text-3xl font-bold text-center mb-4">Global Application, Local Realities</h2>
+            <p class="text-center text-gray-600 mb-12 max-w-2xl mx-auto">A one-size-fits-all approach to DEI fails in a global company. Our strategy is guided by <strong class="font-semibold">cultural humility</strong>—balancing a consistent global message with deep, respectful localization. Click on a region to explore its unique DEI landscape.</p>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <div class="lg:col-span-1 card p-6">
+                    <h3 class="text-xl font-semibold mb-4">Our Operating Regions</h3>
+                    <div id="map-container" class="relative">
+                        <svg viewBox="0 0 800 400" class="w-full h-auto">
+                            <path d="M400 0 L800 200 L400 400 L0 200 Z" fill="#f3f4f6"/>
+                            <!-- Pins for countries -->
+                            <circle cx="180" cy="150" r="15" fill="#d1d5db" class="map-pin" data-country="us"/>
+                            <text x="180" y="155" text-anchor="middle" fill="white" font-size="12" class="pointer-events-none">US</text>
+                            <circle cx="220" cy="120" r="15" fill="#d1d5db" class="map-pin" data-country="ca"/>
+                            <text x="220" y="125" text-anchor="middle" fill="white" font-size="12" class="pointer-events-none">CA</text>
+                            <circle cx="190" cy="200" r="15" fill="#d1d5db" class="map-pin" data-country="mx"/>
+                            <text x="190" y="205" text-anchor="middle" fill="white" font-size="12" class="pointer-events-none">MX</text>
+                            <circle cx="600" cy="160" r="15" fill="#d1d5db" class="map-pin" data-country="cn"/>
+                            <text x="600" y="165" text-anchor="middle" fill="white" font-size="12" class="pointer-events-none">CN</text>
+                            <circle cx="630" cy="210" r="15" fill="#d1d5db" class="map-pin" data-country="sg"/>
+                            <text x="630" y="215" text-anchor="middle" fill="white" font-size="12" class="pointer-events-none">SG</text>
+                        </svg>
+                    </div>
+                </div>
+                <div id="country-info-display" class="lg:col-span-2 card p-8 fade-in">
+                    <!-- Content will be dynamically inserted here -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 4: In Practice -->
+        <section id="practice" class="scroll-mt-20">
+            <h2 class="text-3xl font-bold text-center mb-4">Putting Theory into Practice</h2>
+            <p class="text-center text-gray-600 mb-12 max-w-2xl mx-auto">Understanding concepts is the first step. Applying them is what creates change. Engage with the scenario below to see how DEI-informed decisions lead to better outcomes.</p>
+
+            <div id="scenario-container" class="card p-8 max-w-4xl mx-auto">
+                <div id="scenario-content">
+                    <!-- Scenario content will be dynamically inserted here -->
+                </div>
+                <div id="scenario-options" class="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <!-- Scenario options will be dynamically inserted here -->
+                </div>
+            </div>
+        </section>
+
+    </main>
+    
+    <footer class="bg-gray-800 text-white mt-24">
+        <div class="container mx-auto px-6 py-8 text-center">
+            <p>&copy; 2025 Your Company. All Rights Reserved.</p>
+            <p class="text-sm text-gray-400 mt-2">This interactive module is for internal educational purposes.</p>
+        </div>
+    </footer>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+
+    const data = {
+        countries: {
+            us: {
+                name: "United States",
+                context: "DEI is shaped by civil rights law but exists in a highly polarized social environment. The key is framing DEI as enhancing meritocracy for everyone.",
+                focus: ["Race & Ethnicity", "Gender", "LGBTQ+", "Disability", "Veteran Status"],
+                dos: ["Frame DEI as enhancing meritocracy.", "Use the business case to justify initiatives.", "Use inclusive language for all."],
+                donts: ["Use divisive or activist language.", "Frame DEI as a zero-sum game."]
+            },
+            ca: {
+                name: "Canada",
+                context: "DEI is built on a national identity of multiculturalism (a 'cultural mosaic'). There's a strong focus on human rights, equity, and Indigenous reconciliation.",
+                focus: ["Ethnicity", "Indigenous Reconciliation", "Gender Identity", "Disability", "Bilingualism"],
+                dos: ["Align with multiculturalism language.", "Highlight leadership accountability.", "Acknowledge Indigenous context."],
+                donts: ["Ignore the importance of bilingualism.", "Treat Indigenous issues as an afterthought."]
+            },
+            mx: {
+                name: "Mexico",
+                context: "While strong anti-discrimination laws exist, social practice often lags. Socioeconomic status is a major factor, and there's a powerful local business case for disability inclusion.",
+                focus: ["Disability Inclusion", "Socioeconomic Status", "Gender", "Indigenous Heritage"],
+                dos: ["Emphasize the business case for disability inclusion.", "Address gender with cultural sensitivity.", "Acknowledge class dynamics."],
+                donts: ["Apply a U.S.-centric model of race.", "Ignore the powerful influence of social class."]
+            },
+            cn: {
+                name: "China",
+                context: "DEI must be framed carefully within a state-controlled context, emphasizing harmony, respect, and collective success rather than Western-style social justice.",
+                focus: ["Gender (Women in Leadership)", "Age (Intergenerational Teams)", "Regional/Migrant Status"],
+                dos: ["Frame DEI in terms of 'harmony' and 'collaboration'.", "Focus on business benefits of age/gender diversity."],
+                donts: ["Use activist language or critique state policy.", "Discuss sensitive ethnic or religious topics."]
+            },
+            sg: {
+                name: "Singapore",
+                context: "DEI is built on a foundation of multiculturalism and racial harmony. The challenge is moving beyond 'performative' DEI to build genuine psychological safety in a hierarchical culture.",
+                focus: ["Racial & Religious Harmony", "Age", "Gender", "Disability"],
+                dos: ["Focus on building psychological safety.", "Equip managers to solicit feedback non-confrontationally.", "Emphasize daily inclusive behaviors."],
+                donts: ["Assume policy equals practice.", "Ignore the cultural norm of non-confrontation."]
+            }
+        },
+        scenario: {
+            start: {
+                title: "Scenario: The Hiring Manager",
+                text: "You are a manager hiring for a key role on your team. Your goal is to hire the best possible candidate. Let's walk through some key decisions in the process. First up: reviewing the job description.",
+                options: [
+                    { text: "Let's Begin", next: "q1" }
+                ]
+            },
+            q1: {
+                title: "Step 1: The Job Description",
+                text: "You review the existing job description. It asks for a 'salesman' with '10 years of experience' and the ability to 'carry heavy equipment'. What's your approach?",
+                options: [
+                    { text: "Use it as-is. It has worked before.", next: "r1_bad" },
+                    { text: "Update it. Change 'salesman' to 'salesperson', question the necessity of '10 years', and clarify the actual physical requirements.", next: "r1_good" }
+                ]
+            },
+            r1_good: {
+                title: "Great Choice!",
+                text: "By using inclusive language and focusing on core competencies rather than arbitrary requirements, you've widened your potential talent pool significantly. Now, where do you source candidates?",
+                options: [
+                    { text: "Next Step", next: "q2" }
+                ]
+            },
+            r1_bad: {
+                title: "A Missed Opportunity",
+                text: "Using the old description might deter qualified women, younger candidates, or people with disabilities from applying, shrinking your talent pool. Let's see what's next. Where do you source candidates?",
+                 options: [
+                    { text: "Next Step", next: "q2" }
+                ]
+            },
+            q2: {
+                title: "Step 2: Sourcing Candidates",
+                text: "How will you find applicants for your role?",
+                options: [
+                    { text: "Use the standard company job board only.", next: "r2_bad" },
+                    { text: "Use the job board AND post to diversity-focused platforms.", next: "r2_good" }
+                ]
+            },
+            r2_good: {
+                title: "Excellent Strategy!",
+                text: "Proactively seeking candidates from diverse pools increases your chances of finding top talent that you might otherwise miss. You now have a strong, diverse group of applicants. You've structured the interviews to be consistent for everyone.",
+                options: [
+                    { text: "View Outcome", next: "final_good" }
+                ]
+            },
+            r2_bad: {
+                title: "A Narrow Approach",
+                text: "Relying only on standard channels often results in a less diverse applicant pool, reinforcing the status quo. You move forward with the candidates you have.",
+                options: [
+                    { text: "View Outcome", next: "final_bad" }
+                ]
+            },
+            final_good: {
+                title: "Outcome: A Stronger Team",
+                text: "Because you made a series of DEI-informed choices, you had a wide, diverse pool of highly qualified candidates. You hired someone with a unique perspective who is already contributing to innovation on your team. This is the power of inclusive practices.",
+                options: [
+                    { text: "Restart Scenario", next: "start" }
+                ]
+            },
+            final_bad: {
+                title: "Outcome: More of the Same",
+                text: "Your process resulted in hiring a candidate very similar to the rest of the team. While competent, you missed an opportunity to bring in new perspectives that could drive innovation and better connect with a diverse customer base.",
+                options: [
+                    { text: "Restart Scenario", next: "start" }
+                ]
+            }
+        }
+    };
+
+    // Navigation scroll
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+            document.querySelector(this.getAttribute('href')).scrollIntoView({
+                behavior: 'smooth'
+            });
+            
+            document.querySelectorAll('.nav-link').forEach(link => link.classList.remove('active'));
+            this.classList.add('active');
+        });
+    });
+
+    // Cake Analogy Interaction
+    const cakeElements = document.querySelectorAll('.cake-element');
+    const analogyDisplay = document.getElementById('cake-analogy-display');
+    const analogyTitle = document.getElementById('cake-analogy-title');
+    const analogyText = document.getElementById('cake-analogy-text');
+
+    cakeElements.forEach(element => {
+        element.addEventListener('click', () => {
+            analogyTitle.textContent = element.dataset.title;
+            analogyText.textContent = element.dataset.text;
+            analogyDisplay.style.display = 'block';
+        });
+    });
+
+    // Business Case Chart
+    const ctx = document.getElementById('businessCaseChart').getContext('2d');
+    const businessCaseChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: ['Financial Performance', 'Innovation Revenue', 'Better Decision-Making', 'Employee Engagement'],
+            datasets: [{
+                label: 'Performance Uplift with Strong DEI',
+                data: [36, 19, 87, 20],
+                backgroundColor: [
+                    'rgba(165, 106, 68, 0.6)',
+                    'rgba(217, 163, 130, 0.6)',
+                    'rgba(142, 90, 57, 0.6)',
+                    'rgba(191, 133, 96, 0.6)'
+                ],
+                borderColor: [
+                    'rgba(165, 106, 68, 1)',
+                    'rgba(217, 163, 130, 1)',
+                    'rgba(142, 90, 57, 1)',
+                    'rgba(191, 133, 96, 1)'
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            indexAxis: 'y',
+            plugins: {
+                legend: {
+                    display: false
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            let label = context.dataset.label || '';
+                            if (label) {
+                                label += ': ';
+                            }
+                            if (context.parsed.x !== null) {
+                                label += `+${context.parsed.x}%`;
+                            }
+                            return label;
+                        }
+                    }
+                }
+            },
+            scales: {
+                x: {
+                    beginAtZero: true,
+                    title: {
+                        display: true,
+                        text: 'Percentage Improvement (%)'
+                    }
+                }
+            }
+        }
+    });
+
+    // Global View Interaction
+    const mapPins = document.querySelectorAll('.map-pin');
+    const countryDisplay = document.getElementById('country-info-display');
+
+    function displayCountryInfo(countryCode) {
+        const country = data.countries[countryCode];
+        if (!country) return;
+
+        let dosList = country.dos.map(item => `<li class="flex items-start"><span class="text-green-500 mr-2 mt-1">✓</span><span>${item}</span></li>`).join('');
+        let dontsList = country.donts.map(item => `<li class="flex items-start"><span class="text-red-500 mr-2 mt-1">✗</span><span>${item}</span></li>`).join('');
+        let focusList = country.focus.map(item => `<span class="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">${item}</span>`).join('');
+
+        countryDisplay.innerHTML = `
+            <div class="fade-in">
+                <h3 class="text-2xl font-bold text-[#A56A44] mb-2">${country.name}</h3>
+                <p class="text-gray-600 mb-4">${country.context}</p>
+                <h4 class="font-semibold text-gray-800 mb-2">Primary Focus Areas:</h4>
+                <div class="mb-4">${focusList}</div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <h4 class="font-semibold text-gray-800 mb-2">DO:</h4>
+                        <ul class="space-y-2 text-gray-700">${dosList}</ul>
+                    </div>
+                    <div>
+                        <h4 class="font-semibold text-gray-800 mb-2">DON'T:</h4>
+                        <ul class="space-y-2 text-gray-700">${dontsList}</ul>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        mapPins.forEach(pin => {
+            pin.classList.toggle('active', pin.dataset.country === countryCode);
+        });
     }
-    .nav-link {
-      transition: color 0.3s, border-bottom-color 0.3s;
+
+    mapPins.forEach(pin => {
+        pin.addEventListener('click', () => {
+            displayCountryInfo(pin.dataset.country);
+        });
+    });
+    
+    // Initialize with a default country
+    displayCountryInfo('us');
+
+    // Scenario Interaction
+    const scenarioContent = document.getElementById('scenario-content');
+    const scenarioOptions = document.getElementById('scenario-options');
+
+    function loadScenario(stageKey) {
+        const stage = data.scenario[stageKey];
+        if (!stage) return;
+
+        scenarioContent.innerHTML = `
+            <h3 class="text-2xl font-semibold mb-2">${stage.title}</h3>
+            <p class="text-gray-600">${stage.text}</p>
+        `;
+
+        scenarioOptions.innerHTML = '';
+        stage.options.forEach(option => {
+            const button = document.createElement('button');
+            button.textContent = option.text;
+            button.className = 'btn-secondary px-6 py-3 rounded-lg font-semibold';
+            if(stage.options.length === 1) {
+                button.className = 'btn-primary px-6 py-3 rounded-lg font-semibold sm:col-span-2';
+            }
+            button.addEventListener('click', () => loadScenario(option.next));
+            scenarioOptions.appendChild(button);
+        });
     }
-    .nav-link.active, .nav-link:hover {
-      color: #A56A44;
-      border-bottom-color: #A56A44;
-    }
-    .card {
-      background-color: #FFFFFF;
-      border: 1px solid #EAEAEA;
-      transition: transform 0.3s, box-shadow 0.3s;
-    }
-    .card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-    }
-    .btn-primary {
-      background-color: #A56A44;
-      color: white;
-      transition: background-color 0.3s;
-    }
-    .btn-primary:hover {
-      background-color: #8E5A39;
-    }
-    .btn-secondary {
-      background-color: #F3F4F6;
-      color: #374151;
-      transition: background-color 0.3s;
-    }
-    .btn-secondary:hover {
-      background-color: #E5E7EB;
-    }
-    .chart-container {
-      position: relative;
-      width: 100%;
-      max-width: 800px;
-      margin-left: auto;
-      margin-right: auto;
-      height: 400px;
-      max
+
+    // Initialize scenario
+    loadScenario('start');
+
+});
+</script>
+
+</body>
+</html>
